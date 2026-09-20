@@ -1,0 +1,119 @@
+/* 网站外观配置：修改这里即可调试主题，不必修改页面组件。
+   默认跟随系统；右上角按钮选择会保存在浏览器中。
+   字体可用 Arial / 系统字体，或下方已包含的 Atkinson。 */
+@font-face {
+  font-family: 'Atkinson';
+  src: url('../assets/fonts/atkinson-regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Atkinson';
+  src: url('../assets/fonts/atkinson-bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  /* 字体与排版：例如将 Arial 改为 'Atkinson'。 */
+  --font-body: Arial, Helvetica, 'Microsoft YaHei', sans-serif;
+  --font-heading: var(--font-body);
+  --font-code: Consolas, 'Cascadia Code', monospace;
+  --text-tiny: 10px;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-button: 15px;
+  --text-base: 16px;
+  --text-intro: 17px;
+  --text-lg: 20px;
+  --text-icon: 22px;
+  --text-h3: 23px;
+  --text-xl: 24px;
+  --text-featured: 26px;
+  --text-arrow: 27px;
+  --text-h2: 28px;
+  --text-close: 32px;
+  --text-title-mobile: 34px;
+  --text-about: 38px;
+  --text-title: 40px;
+  --text-hero: 52px;
+  --line-body: 1.7;
+  --line-prose: 1.85;
+  --radius-small: 8px;
+  --radius-button: 12px;
+  --radius-card: 16px;
+  --radius-large: 24px;
+  --width-page: 1072px;
+  --width-wide: 1200px;
+  --width-nav: 1152px;
+  --width-article: 960px;
+  --width-prose: 720px;
+
+  /* 日间配色 */
+  color-scheme: light;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-heading: #6366f1;
+  --on-accent: #ffffff;
+  --accent-subtle: #e0e7ff;
+  --accent-border: #a5b4fc;
+  --accent-soft: #eef2ff;
+  --ink: #111827;
+  --body-text: #374151;
+  --secondary-text: #4b5563;
+  --muted: #6b7280;
+  --faint: #9ca3af;
+  --surface: #ffffff;
+  --surface-soft: #f9fafb;
+  --surface-raised: #ffffff;
+  --surface-hover: #f3f4f6;
+  --line: #e5e7eb;
+  --line-soft: #f3f4f6;
+  --header-bg: #ffffffeb;
+  --focus: #818cf8;
+  --danger: #b91c1c;
+  --success: #4ade80;
+  --notice-text: #4338ca;
+  --card-shadow: 0 8px 24px #1118270d;
+  --glow-one: #e0e7ff80;
+  --glow-two: #f3e8ff80;
+
+  /* 图片/视频预览始终使用深色遮罩，避免影响媒体本身。 */
+  --media-text: #ffffff;
+  --media-muted: #cccccc;
+  --media-caption: #ffffffcc;
+  --media-overlay: #000000bb;
+  --media-badge: #00000088;
+  --media-backdrop: #000000ee;
+  --media-close: #111827;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --accent: #a5b4fc;
+  --accent-hover: #c7d2fe;
+  --accent-heading: #a5b4fc;
+  --on-accent: #141b35;
+  --accent-subtle: #283254;
+  --accent-border: #6366a9;
+  --accent-soft: #222b48;
+  --ink: #f1f5f9;
+  --body-text: #d1d8e4;
+  --secondary-text: #b8c2d3;
+  --muted: #a2afc3;
+  --faint: #94a3b8;
+  --surface: #111827;
+  --surface-soft: #0d1422;
+  --surface-raised: #192334;
+  --surface-hover: #243047;
+  --line: #354259;
+  --line-soft: #283449;
+  --header-bg: #111827eb;
+  --focus: #c7d2fe;
+  --danger: #fca5a5;
+  --success: #4ade80;
+  --notice-text: #c7d2fe;
+  --card-shadow: 0 8px 24px #00000033;
+  --glow-one: #3730a333;
+  --glow-two: #581c8726;
+}

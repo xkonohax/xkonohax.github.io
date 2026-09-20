@@ -41,15 +41,15 @@
       "visible": true
     },
     {
-      "src": "https://images.unsplash.com/photo-1647962431451-d0fdaf1cf21c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
-      "alt": "Coastal Meditation",
-      "span": "wide",
-      "visible": true,
-      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
-      "title": "Coastal Meditation",
-      "type": "video",
       "id": "w5",
-      "category": "Video"
+      "type": "video",
+      "title": "Coastal Meditation",
+      "category": "Video",
+      "src": "https://images.unsplash.com/photo-1647962431451-d0fdaf1cf21c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=800",
+      "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+      "span": "wide",
+      "alt": "Coastal Meditation",
+      "visible": true
     },
     {
       "id": "w6",
@@ -80,15 +80,6 @@
       "span": "normal",
       "alt": "Flavors",
       "visible": true
-    },
-    {
-      "type": "video",
-      "category": "Video",
-      "span": "normal",
-      "visible": true,
-      "title": "QA video upload",
-      "src": "/uploads/works-qa.png",
-      "videoUrl": "/uploads/works-qa.webm"
     }
   ]
 }
