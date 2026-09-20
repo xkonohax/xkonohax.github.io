@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "cms": "node scripts/cms.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
@@ -20,5 +21,9 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "decap-cms": "3.16.2",
+    "decap-server": "3.11.2"
   }
 }

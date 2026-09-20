@@ -2,18 +2,94 @@
 import Site from '../layouts/Site.astro';
 import { WORKS, CATEGORIES } from '../data/works';
 ---
-<Site title="Works — Alex"><main id="main" class="page wide"><div class="page-heading"><p class="eyebrow">Portfolio</p><h1>My Works</h1><p>A collection of photography, design, and video projects I'm proud of.</p></div>
-<div class="filters" aria-label="Filter works">{CATEGORIES.map(category => <button data-category={category} aria-pressed={category === 'All'}>{category}</button>)}</div>
-<p id="work-count" class="sr-only" aria-live="polite">{WORKS.length} works</p>
-<div class="work-grid">{WORKS.map(work => <button class:list={['work',work.span]} data-work={JSON.stringify(work)} data-work-category={work.category} aria-label={'View ' + work.title}><img src={work.src} alt={work.title} loading="lazy"/><span class="work-overlay"><small>{work.category}</small><strong>{work.title}</strong></span>{work.type === 'video' && <span class="play-badge">▶</span>}<span class="zoom-badge" aria-hidden="true">↗</span></button>)}</div>
-<dialog class="lightbox" aria-labelledby="lightbox-title"><button class="lightbox-close" aria-label="Close preview">×</button><div id="lightbox-media"></div><p id="lightbox-category"></p><h2 id="lightbox-title"></h2></dialog>
-</main></Site>
+<Site title="Works — Alex">
+  <main id="main" class="page wide">
+    <div class="page-heading">
+      <p class="eyebrow">Portfolio</p>
+      <h1>My Works</h1>
+      <p>A collection of photography, design, and video projects I'm proud of.</p>
+    </div>
+    <div class="filters" aria-label="Filter works">
+      {CATEGORIES.map(category => <button data-category={category} aria-pressed={category === 'All'}>{category}</button>)}
+    </div>
+    <p id="work-count" class="sr-only" aria-live="polite">{WORKS.length} works</p>
+    <p id="works-empty" hidden={WORKS.length > 0}>No works in this category yet.</p>
+    <div class="work-grid">
+      {WORKS.map(work => <button class:list={['work', work.span]} data-work={JSON.stringify(work)} data-work-category={work.category} aria-label={'View ' + work.title}>
+        <img src={work.src} alt={work.alt || work.title} loading="lazy" />
+        <span class="work-overlay"><small>{work.category}{!work.visible && ' · Hidden online'}</small><strong>{work.title}</strong></span>
+        {work.type === 'video' && <span class="play-badge" aria-hidden="true">▶</span>}
+        <span class="zoom-badge" aria-hidden="true">↗</span>
+      </button>)}
+    </div>
+    <dialog class="lightbox" aria-labelledby="lightbox-title">
+      <button class="lightbox-close" aria-label="Close preview">×</button>
+      <div id="lightbox-media"></div>
+      <p id="lightbox-status" role="status" hidden></p>
+      <p id="lightbox-category"></p>
+      <h2 id="lightbox-title"></h2>
+    </dialog>
+  </main>
+</Site>
 <script>
-const dialog=document.querySelector<HTMLDialogElement>('.lightbox')!;
-const media=document.querySelector<HTMLElement>('#lightbox-media')!;
-document.querySelectorAll<HTMLButtonElement>('[data-category]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-category]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));let count=0;document.querySelectorAll<HTMLElement>('[data-work]').forEach(card=>{card.hidden=button.dataset.category!=='All'&&card.dataset.workCategory!==button.dataset.category;if(!card.hidden)count++;});document.querySelector('#work-count')!.textContent=count+' works';}));
-document.querySelectorAll<HTMLButtonElement>('[data-work]').forEach(button=>button.addEventListener('click',()=>{const work=JSON.parse(button.dataset.work!); const element=document.createElement(work.type==='video'?'video':'img');element.src=work.videoUrl||work.src.replace('w=800','w=1200');if(element instanceof HTMLVideoElement){element.controls=true;element.autoplay=true;element.poster=work.src;}else element.alt=work.title;media.replaceChildren(element);document.querySelector('#lightbox-title')!.textContent=work.title;document.querySelector('#lightbox-category')!.textContent=work.category;dialog.showModal();document.body.style.overflow='hidden';}));
-dialog.querySelector('button')!.addEventListener('click',()=>dialog.close());
-dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
-dialog.addEventListener('close',()=>{media.querySelector('video')?.pause();media.replaceChildren();document.body.style.overflow='';});
+  import type { Work } from '../data/works';
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox')!;
+  const media = document.querySelector<HTMLElement>('#lightbox-media')!;
+  const status = document.querySelector<HTMLElement>('#lightbox-status')!;
+
+  document.querySelectorAll<HTMLButtonElement>('[data-category]').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('[data-category]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      let count = 0;
+      document.querySelectorAll<HTMLElement>('[data-work]').forEach(card => {
+        card.hidden = button.dataset.category !== 'All' && card.dataset.workCategory !== button.dataset.category;
+        if (!card.hidden) count++;
+      });
+      document.querySelector('#work-count')!.textContent = count + ' works';
+      document.querySelector<HTMLElement>('#works-empty')!.hidden = count > 0;
+    });
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-work]').forEach(button => {
+    button.addEventListener('click', () => {
+      const work: Work = JSON.parse(button.dataset.work!);
+      status.hidden = true;
+      status.textContent = '';
+      if (work.type === 'video') {
+        const video = document.createElement('video');
+        video.src = work.videoUrl!;
+        video.controls = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.preload = 'metadata';
+        video.poster = work.src;
+        video.setAttribute('aria-label', work.title);
+        video.addEventListener('error', () => {
+          status.textContent = 'This video could not be played. Please check its format or try again later.';
+          status.hidden = false;
+        });
+        media.replaceChildren(video);
+      } else {
+        const img = document.createElement('img');
+        // Only the reference Unsplash thumbnails use this resize parameter.
+        const url = new URL(work.src, window.location.origin);
+        if (url.hostname === 'images.unsplash.com') url.searchParams.set('w', '1200');
+        img.src = url.href;
+        img.alt = work.alt || work.title;
+        media.replaceChildren(img);
+      }
+      document.querySelector('#lightbox-title')!.textContent = work.title;
+      document.querySelector('#lightbox-category')!.textContent = work.category;
+      dialog.showModal();
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  dialog.querySelector('button')!.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener('close', () => {
+    const video = media.querySelector('video');
+    if (video) { video.pause(); video.removeAttribute('src'); video.load(); }
+    media.replaceChildren();
+    document.body.style.overflow = '';
+  });
 </script>

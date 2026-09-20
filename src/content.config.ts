@@ -9,13 +9,14 @@ const blog = defineCollection({
 	schema: ({ image }) =>
 		z.object({
 			title: z.string(),
-            tags: z.array(z.string()).default([]),
-            coverImage: z.string().url().optional(),
+            tags: z.array(z.string()).nullish().transform(value => value ?? []),
+            draft: z.boolean().default(false),
+            coverImage: z.string().nullish().transform(value => value || undefined).refine(value => !value || /^https?:\/\//.test(value) || /^\/uploads\//.test(value), 'Use an HTTP(S) URL or /uploads/ image path'),
 			description: z.string(),
 			// Transform string to Date object
 			pubDate: z.coerce.date(),
-			updatedDate: z.coerce.date().optional(),
-			heroImage: z.optional(image()),
+			updatedDate: z.preprocess(value => value === '' || value === null ? undefined : value, z.coerce.date().optional()),
+			heroImage: z.preprocess(value => value === '' || value === null ? undefined : value, image().optional()),
 		}),
 });
 

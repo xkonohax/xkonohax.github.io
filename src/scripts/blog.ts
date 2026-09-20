@@ -4,7 +4,7 @@ const published = [...document.querySelectorAll<HTMLElement>('#article-grid .art
 const local = document.querySelector<HTMLElement>('#local-articles')!;
 let activeTag = 'All';
 function filter() {
-  const cards = [...published, ...local.querySelectorAll<HTMLElement>('.article-card')];
+  const cards = [...published, ...(local?.querySelectorAll<HTMLElement>('.article-card') ?? [])];
   let count = 0;
   cards.forEach(card => { card.hidden = activeTag !== 'All' && !JSON.parse(card.dataset.tags!).includes(activeTag); card.classList.remove('featured'); if (!card.hidden) count++; });
   published.find(card => !card.hidden)?.classList.add('featured');
@@ -37,5 +37,9 @@ function renderLocal() {
   filter();
 }
 filters.addEventListener('click', event => {const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-tag]'); if(button){activeTag = button.dataset.tag!; filter();}});
-window.addEventListener('storage', renderLocal);
-renderLocal();
+if (import.meta.env.DEV) {
+  window.addEventListener('storage', renderLocal);
+  renderLocal();
+} else {
+  filter();
+}

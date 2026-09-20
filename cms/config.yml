@@ -1,0 +1,133 @@
+# Local-only: served by Astro dev, excluded from production builds.
+backend:
+  name: git-gateway
+local_backend:
+  url: http://127.0.0.1:8081/api/v1
+locale: zh_Hans
+publish_mode: simple
+media_folder: public/uploads
+public_folder: /uploads
+site_url: http://localhost:4321
+display_url: http://localhost:4321
+show_preview_links: true
+slug:
+  encoding: unicode
+  clean_accents: false
+collections:
+  - name: blog
+    label: 文章
+    label_singular: 文章
+    folder: src/content/blog
+    extension: md
+    format: frontmatter
+    create: true
+    delete: true
+    slug: '{{slug}}'
+    preview_path: blog/{{slug}}/
+    summary: '{{title}} · {{pubDate}}'
+    sortable_fields: [pubDate, title]
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 摘要, name: description, widget: text }
+      - label: 发布日期
+        name: pubDate
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: 更新日期
+        name: updatedDate
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        required: false
+      - { label: 标签, name: tags, widget: list, required: false, default: [] }
+      - label: 封面图片
+        name: coverImage
+        widget: image
+        required: false
+        hint: 上传图片或选择已有图片，也可填写 HTTPS 图片地址。新封面优先于旧版封面显示。
+      - label: 旧版封面路径
+        name: heroImage
+        widget: hidden
+        required: false
+      - label: 草稿
+        name: draft
+        widget: boolean
+        default: true
+        required: false
+        hint: 开启时仅本地可见，不会生成线上文章、RSS 或站点地图记录。取消勾选后提交并推送才能公开发布。
+      - label: 正文
+        name: body
+        widget: markdown
+        hint: 保存到本地文件，不会自动提交或推送 Git。保存后通过预览链接查看实际页面效果。
+  - name: portfolio
+    label: 作品
+    files:
+      - name: works
+        label: Works 作品展示
+        file: src/data/works.json
+        format: json
+        preview_path: portfolio/
+        fields:
+          - name: works
+            label: 作品列表
+            label_singular: 作品
+            widget: list
+            collapsed: true
+            required: false
+            default: []
+            summary: '{{fields.title}} · {{fields.category}}'
+            hint: 拖动调整展示顺序；保存后打开 /portfolio/ 查看效果。删除条目不会自动删除媒体文件。
+            fields:
+              - { name: id, widget: hidden, required: false }
+              - { name: title, label: 作品名称, widget: string }
+              - name: type
+                label: 媒体类型
+                widget: select
+                default: image
+                options:
+                  - { label: 图片, value: image }
+                  - { label: 视频, value: video }
+              - name: category
+                label: 分类
+                widget: select
+                default: Photography
+                options:
+                  - { label: 摄影, value: Photography }
+                  - { label: 设计, value: Design }
+                  - { label: 视频, value: Video }
+              - name: src
+                label: 图片或视频封面
+                widget: image
+                hint: 图片作品上传原图；视频作品上传封面。单张图片限 10 MiB。
+                media_library:
+                  config:
+                    max_file_size: 10485760
+              - name: videoUrl
+                label: 视频文件
+                widget: file
+                required: false
+                hint: 视频作品必填；可上传 MP4/WebM（单个限 50 MiB），或填写可直接播放的视频 URL。图片作品忽略此字段。
+                media_library:
+                  config:
+                    max_file_size: 52428800
+              - name: alt
+                label: 图片说明
+                widget: string
+                required: false
+                hint: 描述图片内容，留空则使用作品名称。
+              - name: span
+                label: 卡片尺寸
+                widget: select
+                default: normal
+                options:
+                  - { label: 普通, value: normal }
+                  - { label: 横向, value: wide }
+                  - { label: 纵向, value: tall }
+              - name: visible
+                label: 线上展示
+                widget: boolean
+                default: true
+                hint: 关闭后仅在本地预览显示，不会进入发布页。媒体文件仍随网站上传。

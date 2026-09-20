@@ -6,9 +6,9 @@ const active = (href: string) => href === '/' ? Astro.url.pathname === '/' : Ast
 <header class="site-header"><nav class="nav-shell" aria-label="Main navigation">
 <a class="logo" href="/">{PROFILE.name}<span>.</span></a>
 <div class="desktop-links">{links.map(([href,label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}</div>
-<a class="button small desktop-write" href="/editor/">✎ &nbsp; Write</a>
+{import.meta.env.DEV && <a class="button small desktop-write" href="/admin/">✎ &nbsp; Manage</a>}
 <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-navigation">☰</button>
-</nav><nav id="mobile-navigation" class="mobile-links" aria-label="Mobile navigation" hidden>{links.map(([href,label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}<a class="button small" href="/editor/">✎ Write</a></nav></header>
+</nav><nav id="mobile-navigation" class="mobile-links" aria-label="Mobile navigation" hidden>{links.map(([href,label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}{import.meta.env.DEV && <a class="button small" href="/admin/">✎ Manage</a>}</nav></header>
 <script>
 const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle')!;
 const menu = document.querySelector<HTMLElement>('#mobile-navigation')!;
