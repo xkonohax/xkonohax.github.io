@@ -1,0 +1,19 @@
+---
+import { PROFILE } from '../consts';
+const links = [['/', 'Home'], ['/portfolio/', 'Works'], ['/blog/', 'Blog'], ['/about/', 'About']];
+const active = (href: string) => href === '/' ? Astro.url.pathname === '/' : Astro.url.pathname.startsWith(href);
+---
+<header class="site-header"><nav class="nav-shell" aria-label="Main navigation">
+<a class="logo" href="/">{PROFILE.name}<span>.</span></a>
+<div class="desktop-links">{links.map(([href,label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}</div>
+<a class="button small desktop-write" href="/editor/">✎ &nbsp; Write</a>
+<button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-navigation">☰</button>
+</nav><nav id="mobile-navigation" class="mobile-links" aria-label="Mobile navigation" hidden>{links.map(([href,label]) => <a href={href} aria-current={active(href) ? 'page' : undefined}>{label}</a>)}<a class="button small" href="/editor/">✎ Write</a></nav></header>
+<script>
+const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle')!;
+const menu = document.querySelector<HTMLElement>('#mobile-navigation')!;
+function close() { menu.hidden = true; toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-label', 'Open navigation'); toggle.textContent = '☰'; }
+toggle.addEventListener('click', () => { const open = menu.hidden; menu.hidden = !open; toggle.setAttribute('aria-expanded', String(open)); toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation'); toggle.textContent = open ? '×' : '☰'; });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && !menu.hidden) {close(); toggle.focus();} });
+matchMedia('(min-width: 768px)').addEventListener('change', e => {if(e.matches) close();});
+</script>

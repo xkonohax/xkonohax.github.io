@@ -1,0 +1,14 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+interface Props { title?: string; description?: string; background?: boolean; }
+const { title = SITE_TITLE, description = SITE_DESCRIPTION, background = false } = Astro.props;
+---
+<!doctype html><html lang="en"><head><BaseHead title={title} description={description}/></head><body class:list={[{ 'soft-background': background }]}><a class="skip-link" href="#main">Skip to content</a><Header/><slot/><Footer/>
+<script>
+function fallback(event: Event) {const target = event.target; if(target instanceof HTMLImageElement && !target.dataset.failed){target.dataset.failed='true';target.src='/image-fallback.svg';}}
+document.addEventListener('error', fallback, true);
+document.querySelectorAll<HTMLImageElement>('img').forEach(img => {if(img.complete && img.naturalWidth===0){img.dataset.failed='true';img.src='/image-fallback.svg';}});
+</script></body></html>
