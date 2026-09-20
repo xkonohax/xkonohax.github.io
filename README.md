@@ -81,7 +81,7 @@ Add Markdown or MDX files under `src/content/blog/`. Supported frontmatter: `tit
 
 The editor saves only to this browser's localStorage. It does not publish to a server or synchronize between devices. Export Markdown, place the file in `src/content/blog/`, then rebuild to publish. Published articles are managed through source files; only local articles have a Delete action. Clear browser data only after exporting anything you want to keep.
 
-Set `site` in `astro.config.mjs` to your real deployment URL before publishing; it currently contains the starter `https://example.com` value used for canonical URLs, RSS, and sitemap.
+The deployment URL in `astro.config.mjs` is `https://xkonohax.github.io`. The target repository is `xkonohax/xkonohax.github.io`; no `base` prefix or custom domain is needed.
 
 ### Run locally
 
@@ -96,3 +96,24 @@ npm run build
 If Windows blocks npm's command-shell subprocess, the equivalent direct commands are `node node_modules/astro/bin/astro.mjs dev --background` and `node node_modules/astro/bin/astro.mjs build`.
 
 Implementation follows the Astro [component](https://docs.astro.build/en/basics/astro-components/), [styling](https://docs.astro.build/en/guides/styling/), [routing](https://docs.astro.build/en/guides/routing/), and [content collection](https://docs.astro.build/en/guides/content-collections/) guides.
+
+
+## GitHub Pages deployment
+
+Target repository: `https://github.com/xkonohax/xkonohax.github.io`
+Website: `https://xkonohax.github.io/`
+
+1. Create the `xkonohax.github.io` repository under the `xkonohax` account if it does not already exist. For a new repository, leave it empty so the local Git history can be pushed directly.
+2. In its **Settings → Pages → Build and deployment**, select **GitHub Actions** as the source.
+3. This local checkout previously pointed to `xkonohax/KonohaBlog`. Check `git remote -v`; if necessary, switch the destination before pushing:
+
+   ```sh
+   git remote set-url origin https://github.com/xkonohax/xkonohax.github.io.git
+   ```
+
+4. Commit the website source, `package.json`, `package-lock.json`, and `.github/workflows/deploy.yml`, then push the `main` branch to the target repository. If the target repository already has commits, fetch and reconcile its history first; do not force-push over it.
+5. Follow **Actions → Deploy to GitHub Pages**. After the deployment succeeds, open the website URL above. Future pushes to `main` rebuild and publish automatically; the workflow can also be run manually.
+
+The workflow builds on Linux with Node.js 24 and deploys Astro's generated static output. Do not upload `node_modules`, `.astro`, or `dist` as source; they are ignored by Git. No personal access token or custom domain configuration is required for this workflow. GitHub supplies the deployment token automatically.
+
+The browser editor remains local-only after deployment. To publish an article for everyone, export its Markdown file to `src/content/blog/`, commit it, and push to `main`.
